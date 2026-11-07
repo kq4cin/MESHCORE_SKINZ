@@ -3,7 +3,7 @@ import type { Mesh, Status } from '../hooks/useMesh';
 import { batteryPercent } from '../lib/format';
 import { Crest, MessagesIcon, NetworkIcon, SettingsIcon, WeatherTabIcon } from './Icons';
 
-export type Tab = 'messages' | 'weather' | 'network' | 'settings';
+export type Tab = 'messages' | 'weather' | 'contacts' | 'settings';
 
 const STATUS_LABEL: Record<Status, string> = { online: 'Online', offline: 'Offline', connecting: 'Connecting', error: 'Error' };
 
@@ -37,7 +37,7 @@ export function Header({ mesh, onStatusClick }: { mesh: Mesh; onStatusClick: () 
 const TABS: Array<{ id: Tab; label: string; Icon: (p: { className?: string }) => ReactNode }> = [
   { id: 'messages', label: 'Messages', Icon: MessagesIcon },
   { id: 'weather', label: 'Weather', Icon: WeatherTabIcon },
-  { id: 'network', label: 'Network', Icon: NetworkIcon },
+  { id: 'contacts', label: 'Contacts', Icon: NetworkIcon },
   { id: 'settings', label: 'Settings', Icon: SettingsIcon },
 ];
 

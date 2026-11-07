@@ -43,7 +43,7 @@ export function MessagesTab({ mesh, openConvo, setOpenConvo }: { mesh: Mesh; ope
           ))}
         </div>
         {sorted.length === 0 ? (
-          <p className="empty muted">{view === 'channels' ? 'No channels yet.' : 'No contacts yet — send an advert from Network.'}</p>
+          <p className="empty muted">{view === 'channels' ? 'No channels yet.' : 'No contacts yet — add some from Contacts.'}</p>
         ) : (
           <ul className="list">
             {sorted.map((c) => (

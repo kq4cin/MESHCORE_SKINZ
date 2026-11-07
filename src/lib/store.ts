@@ -5,6 +5,8 @@ export interface Settings {
   zip: string;
   weatherChannel: string;
   weatherTemplate: string;
+  /** Heard nodes are held for approval instead of being added automatically. */
+  manualAdd: boolean;
 }
 
 export type MessageStatus = 'sending' | 'sent' | 'failed';
@@ -27,6 +29,7 @@ export const DEFAULT_SETTINGS: Settings = {
   zip: '',
   weatherChannel: '#weather',
   weatherTemplate: DEFAULT_TEMPLATE,
+  manualAdd: true,
 };
 
 export const MAX_PER_CONVO = 200;

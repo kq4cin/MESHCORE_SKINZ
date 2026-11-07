@@ -40,6 +40,7 @@ export type Incoming =
 export type RadioEvent =
   | { type: 'message'; message: Incoming }
   | { type: 'contacts-changed' }
+  | { type: 'heard'; contact: Contact }
   | { type: 'disconnected' };
 
 export interface Radio {
@@ -54,6 +55,14 @@ export interface Radio {
   sendDirect(publicKeyHex: string, text: string): Promise<void>;
   sendChannel(idx: number, text: string): Promise<void>;
   sendAdvert(flood: boolean): Promise<void>;
+  addContact(contact: Contact): Promise<void>;
+  removeContact(publicKeyHex: string): Promise<void>;
+  /** Broadcasts a contact's card to nearby nodes. */
+  shareContact(publicKeyHex: string): Promise<void>;
+  /** Returns a contact card as hex (the advert packet), or the node's own card when no key is given. */
+  exportContact(publicKeyHex?: string): Promise<string>;
+  importContact(cardHex: string): Promise<void>;
+  setManualAdd(manual: boolean): Promise<void>;
   syncClock(): Promise<void>;
   drainMessages(): Promise<void>;
   on(listener: (event: RadioEvent) => void): () => void;

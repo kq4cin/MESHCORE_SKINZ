@@ -32,11 +32,12 @@ export function useMesh() {
   const [channels, setChannels] = useState<Channel[]>([]);
   const [weatherChannel, setWeatherChannel] = useState<Channel | null>(null);
   const [weatherPendingSince, setWeatherPendingSince] = useState<number | null>(null);
+  const [heard, setHeard] = useState<Contact[]>([]);
   const [messages, setMessages] = useState<MessageMap>(loadMessages);
   const [readMarks, setReadMarks] = useState<Record<string, number>>(loadReadMarks);
 
-  const ref = useRef({ channels, contacts, self, weatherConvo: channelConvo(normalizeHashtag(settings.weatherChannel)) });
-  ref.current = { channels, contacts, self, weatherConvo: channelConvo(normalizeHashtag(settings.weatherChannel)) };
+  const ref = useRef({ manualAdd: settings.manualAdd, channels, contacts, self, weatherConvo: channelConvo(normalizeHashtag(settings.weatherChannel)) });
+  ref.current = { manualAdd: settings.manualAdd, channels, contacts, self, weatherConvo: channelConvo(normalizeHashtag(settings.weatherChannel)) };
 
   useEffect(() => saveMessages(messages), [messages]);
   useEffect(() => saveReadMarks(readMarks), [readMarks]);
@@ -73,7 +74,9 @@ export function useMesh() {
       const r: Radio = await connectRadio(transport);
       r.on((event) => {
         if (event.type === 'message') handleIncoming(event.message);
-        else if (event.type === 'contacts-changed') void r.getContacts().then(setContacts).catch(() => undefined);
+        else if (event.type === 'heard') {
+          setHeard((list) => [event.contact, ...list.filter((c) => c.publicKey !== event.contact.publicKey)].slice(0, 100));
+        } else if (event.type === 'contacts-changed') void r.getContacts().then(setContacts).catch(() => undefined);
         else if (event.type === 'disconnected') {
           setRadio((current) => (current === r ? null : current));
           setStatus((s) => (s === 'online' ? 'offline' : s));
@@ -82,6 +85,7 @@ export function useMesh() {
       const info = await r.getSelfInfo();
       setSelf(info);
       await r.syncClock();
+      await r.setManualAdd(ref.current.manualAdd).catch(() => undefined);
       const [people, chans] = [await r.getContacts(), await r.getChannels()];
       setContacts(people);
       setChannels(chans);
@@ -174,15 +178,42 @@ export function useMesh() {
 
   const sendAdvert = useCallback(async (flood: boolean) => radio?.sendAdvert(flood), [radio]);
 
+  const addContact = useCallback(async (contact: Contact) => {
+    if (!radio) return;
+    await radio.addContact(contact);
+    setHeard((list) => list.filter((c) => c.publicKey !== contact.publicKey));
+    await refreshContacts(radio);
+  }, [radio, refreshContacts]);
+
+  const removeContact = useCallback(async (publicKey: string) => {
+    if (!radio) return;
+    await radio.removeContact(publicKey);
+    await refreshContacts(radio);
+  }, [radio, refreshContacts]);
+
+  const shareContact = useCallback(async (publicKey: string) => void (await radio?.shareContact(publicKey)), [radio]);
+  const exportContact = useCallback(async (publicKey?: string) => (radio ? radio.exportContact(publicKey) : ''), [radio]);
+  const importContact = useCallback(async (cardHex: string) => {
+    if (!radio) return;
+    await radio.importContact(cardHex);
+    await refreshContacts(radio);
+  }, [radio, refreshContacts]);
+
+  const setManualAdd = useCallback(async (manual: boolean) => {
+    updateSettings({ manualAdd: manual });
+    await radio?.setManualAdd(manual);
+  }, [radio, updateSettings]);
+
   const clearHistory = useCallback(() => {
     setMessages({});
     setReadMarks({});
   }, []);
 
   return {
-    settings, updateSettings, status, error, setError, self, device, batteryMv, contacts, channels,
+    settings, updateSettings, status, error, setError, self, device, batteryMv, contacts, heard, channels,
     weatherChannel, weatherPending: weatherPendingSince !== null, messages, unread, transport: radio?.transport ?? null,
     connect, disconnect, sendMessage, requestWeather, markRead, sendAdvert, refreshContacts, clearHistory,
+    addContact, removeContact, shareContact, exportContact, importContact, setManualAdd,
   };
 }
 

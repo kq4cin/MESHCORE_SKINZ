@@ -338,3 +338,8 @@ button.row:hover, .row.active { background: rgba(244,236,216,.06); }
 
 .reply-btn { background: none; border: 0; color: inherit; font: inherit; margin-left: 8px; padding: 0; cursor: pointer; text-decoration: underline; }
 .mention { font-weight: 700; }
+
+.section-title { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 8px 0 0; }
+.row > .btn { flex: none; width: auto; padding: 6px 14px; min-height: 36px; }
+.row { touch-action: manipulation; -webkit-user-select: none; user-select: none; }
+.actions-row input { flex: 1; min-width: 0; }
