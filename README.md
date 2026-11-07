@@ -14,6 +14,7 @@ A stars-and-stripes **MeshCore companion-radio client** with a built-in **Weathe
 - 💬 **Messages** — channels and direct messages, unread badges, and delivery status
 - 🌦️ **Weather** — sends your ZIP code (or any text your bot responds to) to your weather bot's hashtag channel and shows the reply as a card
 - 🗺️ **Network** — see nearby nodes (companions, repeaters, rooms), send adverts, and tap to DM
+- 📍 **Map** — see contacts that share a GPS position on an OpenStreetMap map (tiles are fetched from OpenStreetMap and cached for offline use; this is the only network request the app makes)
 - ⚙️ **Settings** — weather settings and device info (node name, battery, firmware, radio settings)
 - 📶 **Works offline** — install it once and it keeps working with no connection
 - 🔓 **No account, no server** — your messages and settings never leave your device

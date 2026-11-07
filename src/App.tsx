@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Header, TabBar, type Tab } from './components/Chrome';
+import { MapTab } from './components/MapView';
 import { MessagesTab } from './components/Messages';
 import { ContactsTab } from './components/Contacts';
 import { Onboarding } from './components/Onboarding';
@@ -28,6 +29,7 @@ export default function App() {
         {tab === 'messages' && <MessagesTab mesh={mesh} openConvo={openConvo} setOpenConvo={setOpenConvo} />}
         {tab === 'weather' && <WeatherTab mesh={mesh} />}
         {tab === 'contacts' && <ContactsTab mesh={mesh} openDm={(c) => { setOpenConvo(c); setTab('messages'); }} />}
+        {tab === 'map' && <MapTab mesh={mesh} openDm={(c) => { setOpenConvo(c); setTab('messages'); }} />}
         {tab === 'settings' && <SettingsTab mesh={mesh} />}
       </main>
       <TabBar tab={tab} onChange={(t) => { if (t === tab && t === 'messages') setOpenConvo(null); setTab(t); }} badges={{ messages: messageUnread, weather: mesh.unread[weatherConvo] ?? 0 }} />
