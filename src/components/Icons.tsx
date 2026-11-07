@@ -171,3 +171,11 @@ export const RefreshIcon = (p: P) => (
 export const BroadcastIcon = (p: P) => (
   <svg viewBox="0 0 24 24" aria-hidden focusable={false} {...p}><circle cx="12" cy="12" r="2.5" fill="currentColor" /><path d="M7.8 7.8 a6 6 0 0 0 0 8.4 M16.2 7.8 a6 6 0 0 1 0 8.4 M4.9 4.9 a10 10 0 0 0 0 14.2 M19.1 4.9 a10 10 0 0 1 0 14.2" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
 );
+
+export const ShareIcon = (p: P) => (
+  <svg viewBox="0 0 24 24" aria-hidden focusable={false} {...p}><path d="M12 15 V3 M7 8 L12 3 L17 8 M5 13 V20 H19 V13" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+);
+
+export const AddPersonIcon = (p: P) => (
+  <svg viewBox="0 0 24 24" aria-hidden focusable={false} {...p}><circle cx="9" cy="8" r="4" fill="none" stroke="currentColor" strokeWidth="2.2" /><path d="M2 21 a7 7 0 0 1 14 0 M19 8 V14 M16 11 H22" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" /></svg>
+);
