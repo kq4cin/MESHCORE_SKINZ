@@ -8,6 +8,18 @@ import type { Channel, Contact, ContactKind, DeviceInfo, Radio, RadioEvent, Self
 
 const KINDS: Record<number, ContactKind> = { 1: 'chat', 2: 'repeater', 3: 'room', 4: 'sensor' };
 
+function toContact(c: any): Contact {
+  return {
+    publicKey: toHex(c.publicKey),
+    name: c.advName || toHex(c.publicKey).slice(0, 8),
+    kind: KINDS[c.type] ?? 'unknown',
+    lastAdvert: c.lastAdvert,
+    hops: c.outPathLen >= 0 ? c.outPathLen : null,
+    lat: c.advLat ? c.advLat / 1e6 : undefined,
+    lon: c.advLon ? c.advLon / 1e6 : undefined,
+  };
+}
+
 export function supportsBluetooth(): boolean {
   return typeof navigator !== 'undefined' && 'bluetooth' in navigator;
 }
@@ -34,7 +46,10 @@ class MeshRadio implements Radio {
   constructor(private readonly conn: any, readonly transport: 'ble' | 'serial') {
     conn.on(Constants.PushCodes.MsgWaiting, () => void this.drainMessages());
     conn.on(Constants.PushCodes.Advert, () => this.emit({ type: 'contacts-changed' }));
-    conn.on(Constants.PushCodes.NewAdvert, () => this.emit({ type: 'contacts-changed' }));
+    conn.on(Constants.PushCodes.NewAdvert, (c: any) => {
+      this.emit({ type: 'heard', contact: toContact(c) });
+      this.emit({ type: 'contacts-changed' });
+    });
     conn.on(Constants.PushCodes.PathUpdated, () => this.emit({ type: 'contacts-changed' }));
     conn.on('disconnected', () => this.emit({ type: 'disconnected' }));
   }
@@ -82,15 +97,7 @@ class MeshRadio implements Radio {
   getContacts(): Promise<Contact[]> {
     return this.queue.run(async () => {
       const raw: any[] = await this.conn.getContacts();
-      return raw.map((c) => ({
-        publicKey: toHex(c.publicKey),
-        name: c.advName || toHex(c.publicKey).slice(0, 8),
-        kind: KINDS[c.type] ?? 'unknown',
-        lastAdvert: c.lastAdvert,
-        hops: c.outPathLen >= 0 ? c.outPathLen : null,
-        lat: c.advLat ? c.advLat / 1e6 : undefined,
-        lon: c.advLon ? c.advLon / 1e6 : undefined,
-      }));
+      return raw.map(toContact);
     }, 20_000);
   }
 
@@ -125,6 +132,34 @@ class MeshRadio implements Radio {
 
   sendAdvert(flood: boolean): Promise<void> {
     return this.queue.run(() => (flood ? this.conn.sendFloodAdvert() : this.conn.sendZeroHopAdvert()));
+  }
+
+  addContact(c: Contact): Promise<void> {
+    const type = Number(Object.keys(KINDS).find((k) => KINDS[Number(k)] === c.kind) ?? 0);
+    return this.queue.run(() => this.conn.addOrUpdateContact(
+      fromHex(c.publicKey), type, 0, -1, new Uint8Array(64), c.name, c.lastAdvert || Math.floor(Date.now() / 1000),
+      Math.round((c.lat ?? 0) * 1e6), Math.round((c.lon ?? 0) * 1e6),
+    ));
+  }
+
+  removeContact(publicKeyHex: string): Promise<void> {
+    return this.queue.run(() => this.conn.removeContact(fromHex(publicKeyHex)));
+  }
+
+  shareContact(publicKeyHex: string): Promise<void> {
+    return this.queue.run(() => this.conn.shareContact(fromHex(publicKeyHex)));
+  }
+
+  exportContact(publicKeyHex?: string): Promise<string> {
+    return this.queue.run(async () => toHex((await this.conn.exportContact(publicKeyHex ? fromHex(publicKeyHex) : null)).advertPacketBytes));
+  }
+
+  importContact(cardHex: string): Promise<void> {
+    return this.queue.run(() => this.conn.importContact(fromHex(cardHex)));
+  }
+
+  setManualAdd(manual: boolean): Promise<void> {
+    return this.queue.run(() => this.conn.setOtherParams(manual));
   }
 
   syncClock(): Promise<void> {

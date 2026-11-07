@@ -36,7 +36,7 @@ test('no horizontal overflow on small phones', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 640 });
   await page.goto('./');
   await page.getByRole('button', { name: 'Skip' }).click();
-  for (const tab of ['Messages', 'Weather', 'Network', 'Settings']) {
+  for (const tab of ['Messages', 'Weather', 'Contacts', 'Settings']) {
     await page.getByRole('button', { name: tab, exact: true }).click();
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     expect(overflow, tab).toBeLessThanOrEqual(0);

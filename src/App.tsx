@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Header, TabBar, type Tab } from './components/Chrome';
 import { MessagesTab } from './components/Messages';
-import { NetworkTab } from './components/Network';
+import { ContactsTab } from './components/Contacts';
 import { Onboarding } from './components/Onboarding';
 import { SettingsTab } from './components/Settings';
 import { WeatherTab } from './components/Weather';
@@ -13,7 +13,7 @@ const TAB_KEY = 'mcc.tab';
 
 export default function App() {
   const mesh = useMesh();
-  const [tab, setTab] = useState<Tab>(() => (sessionStorage.getItem(TAB_KEY) as Tab) || 'messages');
+  const [tab, setTab] = useState<Tab>(() => (sessionStorage.getItem(TAB_KEY) === 'network' ? 'contacts' : sessionStorage.getItem(TAB_KEY) as Tab) || 'messages');
   const [openConvo, setOpenConvo] = useState<string | null>(null);
 
   useEffect(() => sessionStorage.setItem(TAB_KEY, tab), [tab]);
@@ -27,7 +27,7 @@ export default function App() {
       <main className="content">
         {tab === 'messages' && <MessagesTab mesh={mesh} openConvo={openConvo} setOpenConvo={setOpenConvo} />}
         {tab === 'weather' && <WeatherTab mesh={mesh} />}
-        {tab === 'network' && <NetworkTab mesh={mesh} openDm={(c) => { setOpenConvo(c); setTab('messages'); }} />}
+        {tab === 'contacts' && <ContactsTab mesh={mesh} openDm={(c) => { setOpenConvo(c); setTab('messages'); }} />}
         {tab === 'settings' && <SettingsTab mesh={mesh} />}
       </main>
       <TabBar tab={tab} onChange={(t) => { if (t === tab && t === 'messages') setOpenConvo(null); setTab(t); }} badges={{ messages: messageUnread, weather: mesh.unread[weatherConvo] ?? 0 }} />
