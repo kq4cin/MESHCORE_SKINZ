@@ -1,12 +1,10 @@
 import type { Mesh } from '../hooks/useMesh';
-import { isDemo } from '../hooks/useMesh';
 import { supportsBluetooth, supportsSerial } from '../lib/radio';
 import { BluetoothIcon, Crest, UsbIcon } from './Icons';
 
 export function ConnectPanel({ mesh, compact = false }: { mesh: Mesh; compact?: boolean }) {
-  const demo = isDemo();
-  const ble = demo || supportsBluetooth();
-  const serial = demo || supportsSerial();
+  const ble = supportsBluetooth();
+  const serial = supportsSerial();
   const busy = mesh.status === 'connecting';
   return (
     <section className={`connect ${compact ? 'connect-compact' : ''}`} aria-labelledby="connect-title">
@@ -25,7 +23,6 @@ export function ConnectPanel({ mesh, compact = false }: { mesh: Mesh; compact?: 
       {!ble && !serial && (
         <p className="muted small">This browser can’t reach radios. Use Chrome on Android or desktop, or Bluefy on iPhone.</p>
       )}
-      {demo && <p className="muted small">Demo mode — no hardware needed.</p>}
     </section>
   );
 }

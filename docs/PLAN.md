@@ -47,16 +47,15 @@ A clone of the MeshCore web client (companion-radio client) that:
   editable in Settings.
 - Incoming: every message on the weather channel from someone other than us is a
   weather report. The newest is shown as a hero card; older ones as a compact history.
-- ZIP validation: US 5-digit or ZIP+4 (`12345` / `12345-6789`).
+- ZIP/location: free text (any non-empty value), since bots may respond to things other than ZIPs.
 
 ### Architecture
 ```
 src/
   lib/hashtag.ts     name normalisation + key derivation        (pure, unit-tested)
-  lib/weather.ts     zip validation, template, report parsing   (pure, unit-tested)
+  lib/weather.ts     request template, report parsing           (pure, unit-tested)
   lib/store.ts       persisted settings + message history       (unit-tested)
   lib/radio.ts       meshcore.js wrapper: connect, queue, sync, channels, contacts
-  lib/demo.ts        fake radio for ?demo=1 (screenshots + e2e tests)
   hooks/useMesh.ts   React state for connection/contacts/channels/messages
   components/        Header, TabBar, Onboarding, Messages, Weather, Network, Settings, Icons
 public/              manifest, sw.js, icons
@@ -93,16 +92,16 @@ Status: ✅ all cards complete for v1.0.
 | --- | --- | --- |
 | G1 | Scaffold Vite/React/TS, configs, scripts | `npm run build` succeeds |
 | G2 | `hashtag.ts` — normalise `Weather`→`#weather`, derive key | Vitest proves key = SHA-256 prefix |
-| G3 | `weather.ts` — zip validation, template fill, report parsing | Vitest cases pass |
+| G3 | `weather.ts` — template fill, report parsing | Vitest cases pass |
 | G4 | `store.ts` — settings + capped message history in localStorage | Vitest round-trip passes |
-| G5 | `radio.ts` — BLE/Serial connect, command queue, contacts, channels, `ensureHashtagChannel`, message drain | Type-checks; demo radio implements same interface |
-| G6 | `demo.ts` — in-memory radio incl. a weather bot that answers ZIPs | `?demo=1` shows data |
-| G7 | `useMesh` hook — state + actions | App compiles, demo works end-to-end |
+| G5 | `radio.ts` — BLE/Serial connect, command queue, contacts, channels, `ensureHashtagChannel`, message drain | Type-checks |
+| G6 | ~~`demo.ts` — in-memory radio~~ (removed) | — |
+| G7 | `useMesh` hook — state + actions | App compiles |
 | G8 | Theme + icons (SVG recreations of the asset pack) + PWA icons | Lighthouse-installable manifest; icons render |
 | G9 | Onboarding: Welcome → ZIP → weather channel | First run asks; values persisted; skippable later via Settings |
-| G10 | Messages tab (channels/direct, thread, composer) | Send/receive in demo |
+| G10 | Messages tab (channels/direct, thread, composer) | Send/receive |
 | G11 | Weather tab (hero card, request, history, empty states) | ZIP request → bot reply visible |
-| G12 | Network + Settings tabs | Advert, rename, edit zip/channel/template |
+| G12 | Network + Settings tabs | Advert, edit zip/channel/template (node name comes from the radio) |
 | G13 | Service worker + install prompt | Loads offline after first visit |
 | G14 | Responsive pass (320 / 390 / 768 / 1280) + Playwright e2e | Screenshots clean, tests green |
 | G15 | README, GitHub Pages workflow, publish | Repo pushed, Pages builds |

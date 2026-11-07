@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { DemoRadio } from '../lib/demo';
 import { normalizeHashtag } from '../lib/hashtag';
 import { connectRadio } from '../lib/radio';
 import {
@@ -10,8 +9,6 @@ import type { Channel, Contact, DeviceInfo, Incoming, Radio, SelfInfo } from '..
 import { buildWeatherRequest } from '../lib/weather';
 
 export type Status = 'offline' | 'connecting' | 'online' | 'error';
-
-export const isDemo = () => new URLSearchParams(globalThis.location?.search ?? '').has('demo');
 
 let seq = 0;
 const localId = () => `out-${Date.now().toString(36)}-${(seq++).toString(36)}`;
@@ -73,7 +70,7 @@ export function useMesh() {
     setError(null);
     setStatus('connecting');
     try {
-      const r: Radio = isDemo() ? new DemoRadio() : await connectRadio(transport);
+      const r: Radio = await connectRadio(transport);
       r.on((event) => {
         if (event.type === 'message') handleIncoming(event.message);
         else if (event.type === 'contacts-changed') void r.getContacts().then(setContacts).catch(() => undefined);
@@ -175,12 +172,6 @@ export function useMesh() {
     return counts;
   }, [messages, readMarks]);
 
-  const rename = useCallback(async (name: string) => {
-    if (!radio || !name.trim()) return;
-    await radio.setName(name.trim());
-    setSelf((s) => (s ? { ...s, name: name.trim() } : s));
-  }, [radio]);
-
   const sendAdvert = useCallback(async (flood: boolean) => radio?.sendAdvert(flood), [radio]);
 
   const clearHistory = useCallback(() => {
@@ -191,7 +182,7 @@ export function useMesh() {
   return {
     settings, updateSettings, status, error, setError, self, device, batteryMv, contacts, channels,
     weatherChannel, weatherPending: weatherPendingSince !== null, messages, unread, transport: radio?.transport ?? null,
-    connect, disconnect, sendMessage, requestWeather, markRead, rename, sendAdvert, refreshContacts, clearHistory,
+    connect, disconnect, sendMessage, requestWeather, markRead, sendAdvert, refreshContacts, clearHistory,
   };
 }
 

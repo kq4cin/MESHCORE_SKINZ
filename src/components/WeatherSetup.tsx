@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { isValidHashtag, normalizeHashtag } from '../lib/hashtag';
-import { DEFAULT_TEMPLATE, buildWeatherRequest, isValidZip, normalizeZip } from '../lib/weather';
+import { DEFAULT_TEMPLATE, MAX_LOCATION_LENGTH, buildWeatherRequest } from '../lib/weather';
 
 interface Props {
   zip: string;
@@ -19,7 +19,7 @@ export function WeatherSetup({ zip: initialZip, channel: initialChannel, submitL
   const [zip, setZip] = useState(initialZip);
   const [channel, setChannel] = useState(initialChannel || '#weather');
   const [touched, setTouched] = useState(false);
-  const zipOk = fields === 'channel' || isValidZip(zip);
+  const zipOk = fields === 'channel' || zip.trim().length > 0;
   const channelOk = fields === 'zip' || isValidHashtag(channel);
 
   const submit = (e: FormEvent) => {
@@ -32,12 +32,13 @@ export function WeatherSetup({ zip: initialZip, channel: initialChannel, submitL
     <form className="form" onSubmit={submit} noValidate>
       {fields !== 'channel' && (
         <label className="field">
-          <span className="field-label">ZIP code</span>
+          <span className="field-label">ZIP code or location</span>
           <input
-            name="zip" inputMode="numeric" autoComplete="postal-code" placeholder="30301" maxLength={10} value={zip}
-            aria-invalid={touched && !zipOk} onChange={(e) => setZip(normalizeZip(e.target.value))} autoFocus={fields === 'zip'}
+            name="zip" autoComplete="postal-code" placeholder="30301" maxLength={MAX_LOCATION_LENGTH} value={zip}
+            aria-invalid={touched && !zipOk} onChange={(e) => setZip(e.target.value)} autoFocus={fields === 'zip'}
           />
-          {touched && !zipOk && <span className="field-error">Enter a 5-digit US ZIP code.</span>}
+          <span className="field-hint">Whatever your weather bot responds to — a ZIP, city, or other text.</span>
+          {touched && !zipOk && <span className="field-error">Enter a ZIP code or location.</span>}
         </label>
       )}
       {fields !== 'zip' && (
@@ -58,7 +59,7 @@ export function WeatherSetup({ zip: initialZip, channel: initialChannel, submitL
           <label className="field">
             <span className="field-label">Bot request format</span>
             <input name="template" value={template} spellCheck={false} autoCapitalize="none" onChange={(e) => setTemplate(e.target.value)} />
-            <span className="field-hint">{'{zip}'} is replaced with your ZIP. Sends: <code>{buildWeatherRequest(zip || '30301', template)}</code></span>
+            <span className="field-hint">{'{zip}'} is replaced with your ZIP or location. Sends: <code>{buildWeatherRequest(zip || '30301', template)}</code></span>
           </label>
         </details>
       )}

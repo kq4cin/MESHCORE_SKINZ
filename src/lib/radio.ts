@@ -127,10 +127,6 @@ class MeshRadio implements Radio {
     return this.queue.run(() => (flood ? this.conn.sendFloodAdvert() : this.conn.sendZeroHopAdvert()));
   }
 
-  setName(name: string): Promise<void> {
-    return this.queue.run(() => this.conn.setAdvertName(name));
-  }
-
   syncClock(): Promise<void> {
     return this.queue.run<void>(() => this.conn.syncDeviceTime()).catch(() => undefined);
   }

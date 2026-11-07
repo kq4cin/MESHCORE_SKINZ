@@ -43,7 +43,7 @@ export type RadioEvent =
   | { type: 'disconnected' };
 
 export interface Radio {
-  readonly transport: 'ble' | 'serial' | 'demo';
+  readonly transport: 'ble' | 'serial';
   getSelfInfo(): Promise<SelfInfo>;
   getDeviceInfo(): Promise<DeviceInfo | null>;
   getBatteryMv(): Promise<number | null>;
@@ -54,7 +54,6 @@ export interface Radio {
   sendDirect(publicKeyHex: string, text: string): Promise<void>;
   sendChannel(idx: number, text: string): Promise<void>;
   sendAdvert(flood: boolean): Promise<void>;
-  setName(name: string): Promise<void>;
   syncClock(): Promise<void>;
   drainMessages(): Promise<void>;
   on(listener: (event: RadioEvent) => void): () => void;

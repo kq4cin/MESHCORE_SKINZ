@@ -1,16 +1,7 @@
 export const DEFAULT_TEMPLATE = '{zip}';
 
-const ZIP_RE = /^\d{5}(?:-\d{4})?$/;
-
-export function normalizeZip(input: string): string {
-  const digits = input.replace(/[^\d]/g, '');
-  if (digits.length === 9) return `${digits.slice(0, 5)}-${digits.slice(5)}`;
-  return digits.slice(0, 5);
-}
-
-export function isValidZip(input: string): boolean {
-  return ZIP_RE.test(input.trim());
-}
+/** Max length of the ZIP/location text sent to the weather bot. */
+export const MAX_LOCATION_LENGTH = 64;
 
 export function buildWeatherRequest(zip: string, template: string = DEFAULT_TEMPLATE): string {
   const tpl = template.trim() || DEFAULT_TEMPLATE;
