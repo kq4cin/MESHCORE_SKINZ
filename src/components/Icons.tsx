@@ -1,4 +1,4 @@
-import type { SVGProps } from 'react';
+import { useId, type SVGProps } from 'react';
 import type { WeatherIcon as WeatherKind } from '../lib/weather';
 
 type P = SVGProps<SVGSVGElement>;
@@ -13,31 +13,47 @@ const Star = ({ x, y, r = 3, fill = 'var(--gold)' }: { x: number; y: number; r?:
   return <polygon points={pts} fill={fill} />;
 };
 
-/** Eagle crest: spread wings, stars-and-stripes shield, gold star. */
+const WING_FEATHERS = 'M21.6 18.5 L8.2 13 Q0.2 6.6 3.3 5 L9.6 5.5 L24.4 11.5 Z M25.4 23.8 L12 20.2 Q3.4 14.8 6.2 12.8 L12.5 12.6 L27.3 16.5 Z M29.1 29 L16.1 27.2 Q6.9 22.9 9.5 20.6 L15.7 19.6 L30.2 21.6 Z M32.9 34.2 L20.4 34 Q10.7 30.9 13 28.3 L19.1 26.5 L33.1 26.8 Z M36.7 39.4 L25 40.6 Q14.9 38.7 16.9 35.8 L22.7 33.3 L35.9 31.9 Z M40.5 44.5 L29.6 47 Q19.5 46.3 21.1 43.2 L26.5 40 L38.8 37.2 Z M44.3 49.5 L34.4 53.1 Q24.2 53.6 25.4 50.4 L30.4 46.6 L41.7 42.5 Z';
+const WING_COVERTS = 'M48 44 C41 30 33 11 19 9 L22 17 Q18.5 26.1 21 29.2 Q20.5 35.3 26 35.4 Q25.5 41.5 31 41.6 Q30.5 47.7 36 47.8 Q35.5 53.9 41 54 L48 54 Z';
+const SHIELD = 'M42 40 H78 V62 C78 80 69 90 60 96 C51 90 42 80 42 62 Z';
+
+const Wing = () => (
+  <g stroke="var(--ink)" strokeWidth="1.6" strokeLinejoin="round">
+    <path d={WING_FEATHERS} fill="var(--brown)" />
+    <path d={WING_COVERTS} fill="var(--brown-2)" />
+  </g>
+);
+
+/** Bald eagle crest: raised wings, white head with hooked beak, stars-and-stripes shield. */
 export function Crest(p: P) {
+  const clip = useId();
   return (
     <svg viewBox="0 0 120 100" aria-hidden focusable={false} {...p}>
-      <g stroke="var(--ink)" strokeWidth="3" strokeLinejoin="round">
-        <path d="M58 40 L8 18 L14 30 L4 32 L16 42 L8 48 L24 54 L20 60 L44 60 Z" fill="var(--cream)" />
-        <path d="M62 40 L112 18 L106 30 L116 32 L104 42 L112 48 L96 54 L100 60 L76 60 Z" fill="var(--cream)" />
-        <path d="M56 44 L16 30 L22 40 L14 44 L30 50 L26 56 L46 58 Z" fill="var(--red)" />
-        <path d="M64 44 L104 30 L98 40 L106 44 L90 50 L94 56 L74 58 Z" fill="var(--red)" />
-        <path d="M60 6 C70 6 74 14 72 22 L82 22 L72 28 L60 30 L48 28 L48 18 C48 10 52 6 60 6 Z" fill="var(--cream)" />
-        <path d="M72 22 L82 22 L74 28 Z" fill="var(--gold)" />
-        <path d="M40 34 H80 V62 C80 78 70 88 60 94 C50 88 40 78 40 62 Z" fill="var(--cream)" />
-        <path d="M40 34 H80 V48 H40 Z" fill="var(--navy)" />
+      <defs><clipPath id={clip}><path d={SHIELD} /></clipPath></defs>
+      <Wing />
+      <g transform="matrix(-1 0 0 1 120 0)"><Wing /></g>
+      <g stroke="var(--ink)" strokeWidth="2" strokeLinejoin="round">
+        <path d="M45 38 C50 33 70 33 75 38 L78 60 L42 60 Z" fill="var(--brown)" />
+        <path d="M52 88 L46 99 L52 97 L56 100 L60 97 L64 100 L68 97 L74 99 L68 88 Z" fill="var(--cream)" />
+        <path d="M49 38 C45 28 47 14 57 9 C65 5 74 7 79 13 L80 25 C76 28 73 32 72 38 L68 34 L65 39 L61 34 L58 39 L54 34 L51 39 Z" fill="var(--cream)" />
+        <path d="M78 12 C85 11 91 13 94 18 C96 22 95 27 91 30 C91 27 89 25 86 25 L79 25 Z" fill="var(--gold)" />
+        <path d="M79 25 L87 25 C85 28 82 29 79 29 Z" fill="var(--gold-2)" />
       </g>
-      <g fill="var(--red)">
-        <rect x="45" y="50" width="5" height="34" />
-        <rect x="55" y="50" width="5" height="42" />
-        <rect x="65" y="50" width="5" height="38" />
-        <rect x="75" y="50" width="3" height="20" />
+      <circle cx="71" cy="17.5" r="2.4" fill="var(--gold)" stroke="var(--ink)" strokeWidth="1" />
+      <circle cx="71.6" cy="17.5" r="1.1" fill="var(--ink)" />
+      <path d="M63 14.5 L79 14 L76 16.5 Z" fill="var(--ink)" />
+      <path d="M80 21 C83 21 86 22 88 24" fill="none" stroke="var(--ink)" strokeWidth="1" />
+      <g clipPath={`url(#${clip})`}>
+        <rect x="40" y="40" width="40" height="60" fill="var(--cream)" />
+        <g fill="var(--red)">
+          {[44.5, 53.5, 62, 71].map((x) => <rect key={x} x={x} y="52" width="4.5" height="50" />)}
+        </g>
+        <rect x="40" y="40" width="40" height="12" fill="var(--navy)" />
       </g>
-      <path d="M40 34 H80 V62 C80 78 70 88 60 94 C50 88 40 78 40 62 Z" fill="none" stroke="var(--ink)" strokeWidth="3" />
-      <circle cx="64" cy="14" r="2" fill="var(--ink)" />
-      <Star x={50} y={41} r={4} fill="var(--cream)" />
-      <Star x={60} y={41} r={4} fill="var(--cream)" />
-      <Star x={70} y={41} r={4} fill="var(--cream)" />
+      <path d={SHIELD} fill="none" stroke="var(--ink)" strokeWidth="2.5" />
+      <Star x={50} y={46.5} r={3.6} fill="var(--cream)" />
+      <Star x={60} y={46.5} r={3.6} fill="var(--cream)" />
+      <Star x={70} y={46.5} r={3.6} fill="var(--cream)" />
     </svg>
   );
 }
