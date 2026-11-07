@@ -164,7 +164,6 @@ input:focus { border-color: var(--gold); outline: none; }
 input[aria-invalid='true'] { border-color: var(--red-2); }
 .form-actions { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
 .form-actions .btn { flex: 1 1 0; }
-.inline-form { display: flex; gap: 10px; align-items: flex-end; }
 .kv { display: flex; justify-content: space-between; gap: 12px; font-size: .92rem; padding: 6px 0; border-bottom: 1px solid var(--line); }
 .kv > :last-child { text-align: right; min-width: 0; overflow-wrap: anywhere; }
 .alert { margin: 0; padding: 10px 12px; border-radius: 10px; background: rgba(200,16,46,.2); border: 1px solid var(--red); font-size: .9rem; }
@@ -285,7 +284,6 @@ button.row:hover, .row.active { background: rgba(244,236,216,.06); }
 .page .list { border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: rgba(0,0,0,.15); }
 .page .list li:last-child .row { border-bottom: 0; }
 .settings-section .btn { width: 100%; }
-.settings-section .inline-form .btn { width: auto; }
 
 /* ---------- Onboarding sheet ---------- */
 .sheet-backdrop {

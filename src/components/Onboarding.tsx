@@ -26,8 +26,8 @@ export function Onboarding({ mesh }: { mesh: Mesh }) {
         {step === 1 && (
           <>
             <WeatherTabIcon className="sheet-icon" />
-            <h2 id="onb-title" className="display">What’s your ZIP?</h2>
-            <p className="muted">It’s sent to the weather bot only when you ask for a forecast.</p>
+            <h2 id="onb-title" className="display">What’s your ZIP or location?</h2>
+            <p className="muted">Enter whatever your weather bot responds to. It’s sent only when you ask for a forecast.</p>
             <WeatherSetup
               fields="zip" zip={settings.zip} channel={settings.weatherChannel} submitLabel="Next"
               secondary={{ label: 'Back', onClick: () => setStep(0) }}

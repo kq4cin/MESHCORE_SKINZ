@@ -26,7 +26,7 @@ export function WeatherTab({ mesh }: { mesh: Mesh }) {
         <section className="card">
           <WeatherTabIcon className="card-icon" />
           <h2 className="display">Local weather</h2>
-          <p className="muted">Enter your ZIP and the hashtag channel your weather bot listens on.</p>
+          <p className="muted">Enter your ZIP or location and the hashtag channel your weather bot listens on.</p>
           <WeatherSetup
             zip={settings.zip} channel={settings.weatherChannel} template={settings.weatherTemplate} submitLabel="Save"
             secondary={configured ? { label: 'Cancel', onClick: () => setEditing(false) } : undefined}
@@ -41,8 +41,8 @@ export function WeatherTab({ mesh }: { mesh: Mesh }) {
 
   return (
     <div className="page narrow weather">
-      <button className="chip" onClick={() => setEditing(true)} aria-label="Change ZIP or channel">
-        ZIP <strong>{settings.zip}</strong> · {tag} <span className="chip-edit">Edit</span>
+      <button className="chip" onClick={() => setEditing(true)} aria-label="Change ZIP/location or channel">
+        <strong>{settings.zip}</strong> · {tag} <span className="chip-edit">Edit</span>
       </button>
 
       <section className="card hero" aria-live="polite">

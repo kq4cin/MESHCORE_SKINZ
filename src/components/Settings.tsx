@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import type { Mesh } from '../hooks/useMesh';
 import { batteryPercent } from '../lib/format';
 import { WeatherSetup } from './WeatherSetup';
@@ -22,12 +22,10 @@ function Row({ label, value }: { label: string; value: ReactNode }) {
 
 export function SettingsTab({ mesh }: { mesh: Mesh }) {
   const { settings, updateSettings, self, device } = mesh;
-  const [name, setName] = useState(self?.name ?? '');
   const [saved, setSaved] = useState<string | null>(null);
   const [install, setInstall] = useState<InstallPrompt | null>(null);
   const online = mesh.status === 'online';
 
-  useEffect(() => setName(self?.name ?? ''), [self?.name]);
   useEffect(() => {
     const onPrompt = (e: Event) => { e.preventDefault(); setInstall(e as InstallPrompt); };
     window.addEventListener('beforeinstallprompt', onPrompt);
@@ -35,12 +33,6 @@ export function SettingsTab({ mesh }: { mesh: Mesh }) {
   }, []);
 
   const flash = (msg: string) => { setSaved(msg); setTimeout(() => setSaved(null), 2000); };
-
-  const saveName = async (e: FormEvent) => {
-    e.preventDefault();
-    await mesh.rename(name);
-    flash('Name updated');
-  };
 
   return (
     <div className="page narrow">
@@ -54,21 +46,12 @@ export function SettingsTab({ mesh }: { mesh: Mesh }) {
         />
       </Section>
 
-      <Section title="Profile">
-        <form className="inline-form" onSubmit={saveName}>
-          <label className="field grow">
-            <span className="field-label">Node name</span>
-            <input value={name} maxLength={31} disabled={!online} onChange={(e) => setName(e.target.value)} placeholder="Connect to edit" />
-          </label>
-          <button className="btn btn-primary" disabled={!online || !name.trim() || name === self?.name}>Save</button>
-        </form>
-        {self && <Row label="Public key" value={<code>{self.publicKey.slice(0, 16)}…</code>} />}
-      </Section>
-
       <Section title="Device">
         {online && self ? (
           <>
-            <Row label="Link" value={mesh.transport === 'ble' ? 'Bluetooth' : mesh.transport === 'serial' ? 'USB' : 'Demo'} />
+            <Row label="Node name" value={self.name} />
+            <Row label="Public key" value={<code>{self.publicKey.slice(0, 16)}…</code>} />
+            <Row label="Link" value={mesh.transport === 'ble' ? 'Bluetooth' : 'USB'} />
             {device && <Row label="Model" value={device.model} />}
             {device && <Row label="Firmware" value={device.firmware} />}
             {mesh.batteryMv != null && <Row label="Battery" value={`${batteryPercent(mesh.batteryMv)}% · ${(mesh.batteryMv / 1000).toFixed(2)} V`} />}

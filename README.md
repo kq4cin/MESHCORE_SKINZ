@@ -1,11 +1,22 @@
-# MeshCore Client PWA
+# 🦅 MeshCore Client
 
-An installable, offline-capable clone of the MeshCore companion-radio web client with a
-stars-and-stripes theme and a **Weather** tab. You enter your ZIP code and the hashtag
-channel your weather bot uses. The app sends the ZIP to the bot over the mesh and shows
-the bot's reply.
+## ▶️ [Launch the app: kq4cin.github.io/MESHCORE_SKINZ](https://kq4cin.github.io/MESHCORE_SKINZ/)
 
-**Live:** https://kq4cin.github.io/MESHCORE_SKINZ/ · **Demo (no radio needed):** https://kq4cin.github.io/MESHCORE_SKINZ/?demo=1
+Click the link above. The app runs in your web browser. There is nothing to download and no account to create.
+
+---
+
+## What is it?
+
+A stars-and-stripes **MeshCore companion-radio client** with a built-in **Weather** tab. Pair your radio and chat off-grid over LoRa, then ask your mesh weather bot for a forecast with one tap.
+
+- 📡 **Connect your radio** — over Bluetooth or USB
+- 💬 **Messages** — channels and direct messages, unread badges, and delivery status
+- 🌦️ **Weather** — sends your ZIP code (or any text your bot responds to) to your weather bot's hashtag channel and shows the reply as a card
+- 🗺️ **Network** — see nearby nodes (companions, repeaters, rooms), send adverts, and tap to DM
+- ⚙️ **Settings** — weather settings and device info (node name, battery, firmware, radio settings)
+- 📶 **Works offline** — install it once and it keeps working with no connection
+- 🔓 **No account, no server** — your messages and settings never leave your device
 
 | Connect | Weather | Chat | Network |
 | --- | --- | --- | --- |
@@ -13,19 +24,34 @@ the bot's reply.
 
 ![Desktop two-pane layout](docs/screenshots/desktop.png)
 
-## Features
-- **Connect** to a MeshCore companion radio over Bluetooth (Web Bluetooth) or USB (Web Serial).
-- **Messages:** channels and direct messages, unread badges, and delivery state. History is saved on the device.
-- **Weather:** a first-run setup asks for your ZIP and weather hashtag channel (default `#weather`).
-  The app adds that hashtag channel to your radio for you. **Get weather** sends the bare ZIP
-  (e.g. `30301`) on the channel. The newest bot reply is shown as a card, and older replies are listed under it.
-  You can change the request format under **Settings → Weather → Advanced**; `{zip}` is replaced with your ZIP.
-- **Network:** heard nodes (companions, repeaters, rooms), flood or zero-hop adverts, and tap-to-DM.
-- **Settings:** weather settings, node name, and device info (model, firmware, battery, radio settings).
-- **PWA:** install to the home screen and work offline once the app has loaded. All data stays on the device.
-- **Responsive:** bottom tab bar on phones (from 320 px, safe-area aware); left rail with list and thread side by side at 900 px and up.
+---
 
-## Browser support
+## First time using it?
+
+1. Open the [app link](https://kq4cin.github.io/MESHCORE_SKINZ/).
+2. Enter your **ZIP code or location** — whatever your weather bot responds to (for example `30301` or `Atlanta, GA`).
+3. Enter your weather bot's **hashtag channel** (default `#weather`). The app adds it to your radio for you.
+4. Tap **Connect** and pick your radio. Its node name comes from the radio, so there's nothing to set up.
+5. Open the **Weather** tab and tap **Get weather**.
+
+You can change these later in **Settings**, or tap **Replay setup** to go through it again.
+
+---
+
+## Install it like an app (optional)
+
+Installing puts an icon on your home screen and lets the app open **without internet**.
+
+| Device | How to install |
+|---|---|
+| **Android** (Chrome) | Open the app → tap the **⋮** menu → **Install app** or **Add to Home screen** |
+| **iPhone / iPad** ([Bluefy](https://apps.apple.com/app/bluefy-web-ble-browser/id1492822055)) | Open the app in Bluefy → use its menu to **Add to Home Screen** |
+| **Windows / Mac** (Chrome or Edge) | Open the app → click the **install icon** in the address bar |
+
+---
+
+## Which browsers work?
+
 | Platform | Bluetooth | USB |
 | --- | --- | --- |
 | Android – Chrome / Edge | ✅ | ✅ (OTG) |
@@ -33,15 +59,30 @@ the bot's reply.
 | iPhone / iPad | ✅ via the [Bluefy](https://apps.apple.com/app/bluefy-web-ble-browser/id1492822055) browser | ❌ |
 | Firefox / Safari | ❌ | ❌ |
 
-## How the weather channel works
-MeshCore hashtag channels use a shared key. The key is the first 16 bytes of `SHA-256("#name")`.
-If the channel isn't already on the radio, the app installs it in the first free channel
-slot. Any message on that channel from another node is treated as a weather report.
+---
 
-## Development
+## Are my messages saved?
+
+Yes. Messages and settings save automatically in your browser.
+
+- They are saved **on that device only**.
+- Clearing your browser data (or **Settings → Clear message history**) will erase them.
+
+---
+
+## How the weather channel works
+
+MeshCore hashtag channels use a shared key: the first 16 bytes of `SHA-256("#name")`. If the channel isn't already on the radio, the app installs it in the first free channel slot.
+
+**Get weather** sends your ZIP or location text as-is on that channel. Any message on the channel from another node is treated as a weather report: the newest is shown as a card, with older replies listed below. To change the request format, use **Settings → Weather → Advanced**; `{zip}` is replaced with your ZIP or location.
+
+---
+
+## For developers
+
 ```bash
 npm install
-npm run dev            # http://localhost:5173/?demo=1 for the fake radio + weather bot
+npm run dev            # http://localhost:5173/
 npm test               # unit tests (Vitest)
 npm run test:browser   # end-to-end tests at phone sizes (Playwright)
 npm run build          # type-check + production build to dist/
@@ -52,3 +93,9 @@ Planning notes, including the Elephant & Goldfish plan, are in [docs/PLAN.md](do
 
 Built on [`@liamcottle/meshcore.js`](https://github.com/meshcore-dev/meshcore.js) (MIT).
 The theme artwork in this repo is an SVG recreation inspired by the supplied asset pack.
+
+---
+
+## License
+
+[MIT](LICENSE)
