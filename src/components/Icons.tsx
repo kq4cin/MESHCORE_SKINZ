@@ -85,6 +85,17 @@ export function NetworkIcon(p: P) {
   );
 }
 
+export function MapIcon(p: P) {
+  return (
+    <svg {...base(p)}>
+      <path d="M6 12l12-5 12 5 12-5v29l-12 5-12-5-12 5z" fill="none" stroke="var(--cream)" strokeWidth="2.5" strokeLinejoin="round" />
+      <line x1="18" y1="7" x2="18" y2="36" stroke="var(--cream)" strokeWidth="2" />
+      <line x1="30" y1="12" x2="30" y2="41" stroke="var(--cream)" strokeWidth="2" />
+      <circle cx="24" cy="22" r="4" fill="var(--red)" stroke="var(--cream)" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
 export function SettingsIcon(p: P) {
   const teeth = Array.from({ length: 8 }, (_, i) => (
     <rect key={i} x="21" y="3" width="6" height="8" rx="1" fill="var(--cream)" transform={`rotate(${i * 45} 24 24)`} />

@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
 import type { Mesh, Status } from '../hooks/useMesh';
 import { batteryPercent } from '../lib/format';
-import { Crest, MessagesIcon, NetworkIcon, SettingsIcon, WeatherTabIcon } from './Icons';
+import { Crest, MapIcon, MessagesIcon, NetworkIcon, SettingsIcon, WeatherTabIcon } from './Icons';
 
-export type Tab = 'messages' | 'weather' | 'contacts' | 'settings';
+export type Tab = 'messages' | 'weather' | 'contacts' | 'map' | 'settings';
 
 const STATUS_LABEL: Record<Status, string> = { online: 'Online', offline: 'Offline', connecting: 'Connecting', error: 'Error' };
 
@@ -38,6 +38,7 @@ const TABS: Array<{ id: Tab; label: string; Icon: (p: { className?: string }) =>
   { id: 'messages', label: 'Messages', Icon: MessagesIcon },
   { id: 'weather', label: 'Weather', Icon: WeatherTabIcon },
   { id: 'contacts', label: 'Contacts', Icon: NetworkIcon },
+  { id: 'map', label: 'Map', Icon: MapIcon },
   { id: 'settings', label: 'Settings', Icon: SettingsIcon },
 ];
 
