@@ -76,6 +76,12 @@ function Thread({ mesh, convo, onBack }: { mesh: Mesh; convo: Convo; onBack: () 
   const scroller = useRef<HTMLDivElement>(null);
   const online = mesh.status === 'online';
   const { markRead } = mesh;
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const reply = (name: string) => {
+    setDraft((d) => (d.startsWith(`@[${name}] `) ? d : `@[${name}] ${d.replace(/^@\[[^\]]*\]\s*/, '')}`));
+    inputRef.current?.focus();
+  };
 
   useEffect(() => markRead(convo.id), [convo.id, list.length, markRead]);
   useLayoutEffect(() => {
@@ -101,22 +107,29 @@ function Thread({ mesh, convo, onBack }: { mesh: Mesh; convo: Convo; onBack: () 
         {list.map((m) => (
           <div key={m.id} className={`bubble ${m.outgoing ? 'out' : 'in'} ${m.status === 'failed' ? 'failed' : ''}`}>
             {!m.outgoing && convo.id.startsWith('ch:') && <span className="bubble-from">{m.from}</span>}
-            <span className="bubble-text">{m.text}</span>
+            <span className="bubble-text">{renderText(m.text)}</span>
             <span className="bubble-meta">
               {clockTime(m.ts)}
               {m.hops != null && !m.outgoing && ` · ${m.hops === 0 ? 'direct' : `${m.hops} hop${m.hops > 1 ? 's' : ''}`}`}
               {m.outgoing && ` · ${m.status === 'sending' ? 'sending…' : m.status === 'failed' ? 'failed' : 'sent'}`}
+              {!m.outgoing && online && <button type="button" className="reply-btn" onClick={() => reply(m.from)} aria-label={`Reply to ${m.from}`}>↩ Reply</button>}
             </span>
           </div>
         ))}
       </div>
       <form className="composer" onSubmit={submit}>
         <input
-          aria-label="Message" placeholder={online ? 'Message' : 'Connect to send'} value={draft} disabled={!online}
+          ref={inputRef} aria-label="Message" placeholder={online ? 'Message' : 'Connect to send'} value={draft} disabled={!online}
           maxLength={140} onChange={(e) => setDraft(e.target.value)} enterKeyHint="send"
         />
         <button className="icon-btn send" disabled={!online || !draft.trim()} aria-label="Send"><SendIcon /></button>
       </form>
     </section>
   );
+}
+
+/** Highlights MeshCore-style `@[name]` mentions, which is how replies are addressed. */
+function renderText(text: string) {
+  return text.split(/(@\[[^\]]+\])/g).map((part, i) =>
+    /^@\[[^\]]+\]$/.test(part) ? <strong key={i} className="mention">{part}</strong> : part);
 }

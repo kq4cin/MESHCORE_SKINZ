@@ -335,3 +335,6 @@ button.row:hover, .row.active { background: rgba(244,236,216,.06); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+.reply-btn { background: none; border: 0; color: inherit; font: inherit; margin-left: 8px; padding: 0; cursor: pointer; text-decoration: underline; }
+.mention { font-weight: 700; }
