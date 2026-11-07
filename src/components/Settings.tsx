@@ -57,6 +57,11 @@ export function SettingsTab({ mesh }: { mesh: Mesh }) {
             {mesh.batteryMv != null && <Row label="Battery" value={`${batteryPercent(mesh.batteryMv)}% · ${(mesh.batteryMv / 1000).toFixed(2)} V`} />}
             <Row label="Radio" value={`${self.radioFreq.toFixed(3)} MHz · BW ${self.radioBw} · SF${self.radioSf} · CR${self.radioCr}`} />
             <Row label="TX power" value={`${self.txPower} dBm`} />
+            <label className="check">
+              <input type="checkbox" checked={settings.manualAdd}
+                onChange={(e) => void mesh.setManualAdd(e.target.checked).then(() => flash('Saved'), () => flash('Could not change setting'))} />
+              Approve new contacts before adding
+            </label>
             <button className="btn btn-danger" onClick={() => void mesh.disconnect()}>Disconnect</button>
           </>
         ) : (
