@@ -11,18 +11,24 @@ Click the link above. The app runs in your web browser. There is nothing to down
 A stars-and-stripes **MeshCore companion-radio client** with a built-in **Weather** tab. Pair your radio and chat off-grid over LoRa, then ask your mesh weather bot for a forecast with one tap.
 
 - 📡 **Connect your radio** — over Bluetooth or USB
-- 💬 **Messages** — channels and direct messages, unread badges, and delivery status
+- 💬 **Messages** — channels and direct messages, unread badges, delivery status, and one-tap **Reply** to mention a sender
 - 🌦️ **Weather** — sends your ZIP code (or any text your bot responds to) to your weather bot's hashtag channel and shows the reply as a card
-- 🗺️ **Network** — see nearby nodes (companions, repeaters, rooms), send adverts, and tap to DM
+- 👥 **Contacts** — search, filter (users, repeaters, rooms, ★ favorites), and sort your contacts; approve newly heard nodes; send adverts; tap to DM, long-press for more options
 - 🪪 **Contact cards** — share and add contacts with the MeshCore app's link format: `meshcore://contact/add?name=…&public_key=…&type=1`
 - 📍 **Map** — see contacts that share a GPS position on an OpenStreetMap map (tiles are fetched from OpenStreetMap and cached for offline use; this is the only network request the app makes)
 - ⚙️ **Settings** — weather settings and device info (node name, battery, firmware, radio settings)
 - 📶 **Works offline** — install it once and it keeps working with no connection
 - 🔓 **No account, no server** — your messages and settings never leave your device
 
-| Connect | Weather | Chat | Network |
-| --- | --- | --- | --- |
-| ![Connect](docs/screenshots/connect.png) | ![Weather](docs/screenshots/weather.png) | ![Thread](docs/screenshots/thread.png) | ![Network](docs/screenshots/network.png) |
+## Screenshots
+
+| Setup | Connect | Weather |
+| :---: | :---: | :---: |
+| ![First-run setup asking for a ZIP code or location](docs/screenshots/onboarding-location.png) | ![Connect your radio over Bluetooth or USB](docs/screenshots/connect.png) | ![Weather tab showing the latest bot report](docs/screenshots/weather.png) |
+| **Chat** | **Contacts** | **Settings** |
+| ![Public channel conversation](docs/screenshots/thread.png) | ![Contacts list with filters and sort](docs/screenshots/contacts.png) | ![Settings with weather and device info](docs/screenshots/settings.png) |
+
+On wider screens (900 px and up) the app switches to a side rail and a two-pane Messages view:
 
 ![Desktop two-pane layout](docs/screenshots/desktop.png)
 
@@ -89,6 +95,7 @@ npm test               # unit tests (Vitest)
 npm run test:browser   # end-to-end tests at phone sizes (Playwright)
 npm run build          # type-check + production build to dist/
 npm run icons          # regenerate PNG icons from public/icons/*.svg
+npm run screenshots    # regenerate docs/screenshots/*.png with a mock radio and sample data
 ```
 
 Planning notes, including the Elephant & Goldfish plan, are in [docs/PLAN.md](docs/PLAN.md).
